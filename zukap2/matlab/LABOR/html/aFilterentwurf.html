@@ -1,0 +1,239 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN">
+<html xmlns:mwsh="http://www.mathworks.com/namespace/mcode/v1/syntaxhighlight.dtd">
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+      <!--
+This HTML is auto-generated from an M-file.
+To make changes, update the M-file and republish this document.
+      -->
+      <title>Filterentwurf mit MATLAB</title>
+      <meta name="generator" content="MATLAB 7.3">
+      <meta name="date" content="2012-08-23">
+      <meta name="m-file" content="aFilterentwurf"><style>
+
+body {
+  background-color: white;
+  margin:10px;
+}
+
+h1 {
+  color: #990000; 
+  font-size: x-large;
+}
+
+h2 {
+  color: #990000;
+  font-size: medium;
+}
+
+/* Make the text shrink to fit narrow windows, but not stretch too far in 
+wide windows. */ 
+p,h1,h2,div.content div {
+  max-width: 600px;
+  /* Hack for IE6 */
+  width: auto !important; width: 600px;
+}
+
+pre.codeinput {
+  background: #EEEEEE;
+  padding: 10px;
+}
+@media print {
+  pre.codeinput {word-wrap:break-word; width:100%;}
+} 
+
+span.keyword {color: #0000FF}
+span.comment {color: #228B22}
+span.string {color: #A020F0}
+span.untermstring {color: #B20000}
+span.syscmd {color: #B28C00}
+
+pre.codeoutput {
+  color: #666666;
+  padding: 10px;
+}
+
+pre.error {
+  color: red;
+}
+
+p.footer {
+  text-align: right;
+  font-size: xx-small;
+  font-weight: lighter;
+  font-style: italic;
+  color: gray;
+}
+
+  </style></head>
+   <body>
+      <div class="content">
+         <h1>Filterentwurf mit MATLAB</h1>
+         <introduction></introduction>
+         <h2>Contents</h2>
+         <div>
+            <ul>
+               <li><a href="#1">(i) Bandpass mit Parks-McClellen</a></li>
+               <li><a href="#2">Eingaben</a></li>
+               <li><a href="#3">Entwurf mit firpm.m</a></li>
+               <li><a href="#4">Grafische Ausgabe</a></li>
+               <li><a href="#5">Bestimmung der Welligkeit</a></li>
+               <li><a href="#6">Darstellung in dB</a></li>
+               <li><a href="#7">(ii) Vergleich der Methoden</a></li>
+            </ul>
+         </div>
+         <h2>(i) Bandpass mit Parks-McClellen<a name="1"></a></h2><pre>Entwerfen Sie f&uuml;r ein digitales System mit der Abtastfrequenz 8kHz einen
+linearphasigen Bandpass im Frequenzbereich 2 bis 3 kHz mit minimaler
+Abweichung vom Sollfrequenzgang (firpm.m). Wie gro&szlig; ist die Welligkeit
+f&uuml;r ein Filter mit 100 Koeffizienten?
+(c) DS Institut, Jorge Zuniga, WS 2011/12; Vers. 1.0 Vers. 1.1 B. Wir</pre><pre class="codeinput">clear <span class="string">all</span>; close <span class="string">all</span>;
+</pre><h2>Eingaben<a name="2"></a></h2><pre class="codeinput">fa=8000;                     <span class="comment">% Abtastfrequenz</span>
+fn=fa/2;                     <span class="comment">% Nyquistfrequenz (= pi)</span>
+fd1=2000;                    <span class="comment">% Untere Grenzfrequenz</span>
+fd2=3000;                    <span class="comment">% Obere Grenzfrequenz</span>
+N=100;                       <span class="comment">% Anzahl von Koeffizienten</span>
+</pre><h2>Entwurf mit firpm.m<a name="3"></a></h2>
+         <p>firpm entwirft ein linearphasiges FIR Filter mit Hilfe des Parks-McClellan Algorithmus. firpm.m liefert die Koeffizienten
+            bo,b1,b2,... Die Funktion firpm ben&ouml;tigt f&uuml;r den Entwurf folgende Daten: Ein Vektor mit den norm. Frequenzen (f), die dazugeh&ouml;rige
+            Amplituden in eigenem Vektor (a). Au&szlig;erdem ben&ouml;tigt man die Anzahl von Koeffizienten minus eins (N-1). fd1n=fd1/fn;      
+                       % Norm. Frequenz fd1n=0.5 fd2n= ......;                 % Norm. Frequenz fd2n=0.75 f=[0  .......           1];
+            % Frequenzvektor a=[0  0     1   1   0   0];   % Amplitudenvertor b=firpm(N-1,f,a);             % Filterentwurf
+         </p>
+         <h2>Grafische Ausgabe<a name="4"></a></h2>
+         <p>Ideales (gefordertes) und entworfenes Filter [h,w]=freqz(b,1,1024);       % [h,w] = Amplituden und Frequenzen figure(1); plot(f,a,'o',w/pi,abs(h));
+            legend('Ideal','firpm Entwurf','Location','Best')
+         </p>
+         <h2>Bestimmung der Welligkeit<a name="5"></a></h2>
+         <p>Der Durchlassbereich wird gezoomt und dann mit dem Werkzeug von MATLAB gemessen figure(2); plot(f,a,'o',w/pi,abs(h)); text(0.1,1.01,'Welligkeit=0,008');
+            axis([0 1 0.95 1.05])
+         </p>
+         <h2>Darstellung in dB<a name="6"></a></h2>
+         <p>Die Verst&auml;rkung wird in dB dargestellt: $$ 10log(P_{out}/P_{in})^2:=10log(U_{out}/U_{in})^2=20log(U_{out}/U_{in}) $$ ACHTUNG:
+            MATLAB berechnet die Eckfrequenz fc bei -6dB. Sie ist die Frequenz, bei der die normierte Verst&auml;rkung = 0,5 betr&auml;gt.  Diese
+            Frequenz l&auml;sst sich folgenderma&szlig;en ausrechnen fc1=fs1n+(fd1n-fs1n)/2. Wobei fs1n und fd1n die normierten Sperr-/ und Durchlass-Frequenzen
+            sind. Hier: fc1=0,45+(0,5-0,45)/2=0,475 (hier 1900Hz) und fc2=0,775 (3100Hz). Sonst ist fc als die Frequenz definiert, bei
+            der die Verst&auml;rkung um 0,707 (-3 dB) abgesunken ist.
+         </p><pre class="codeinput"><span class="comment">% figure(3);semilogy(w/pi,abs(h));</span>
+<span class="comment">% plot(w/pi,20*log10(abs(h)),w/pi,-6);xlabel('\omega/\pi'),ylabel('|G(\omega)|/dB')</span>
+<span class="comment">% legend('20log|G(\omega)|','Location','NorthWest');</span>
+</pre><h2>(ii) Vergleich der Methoden<a name="7"></a></h2>
+         <p>F&uuml;r ein digitales System mit der Abtastfrequenz f = 2kHz soll ein Tiefpass mit der Grenzfrequenz 500 Hz und einer Sperrd&auml;mpfung
+            von 70 dB f&uuml;r Frequenzen oberhalb von 530Hz entworfen werden. Verwenden Sie das Programm filtdemo.m um folgende Fragen zu
+            beantworten:
+         </p><pre>(a) Welche Filterordnung muss ein FIR-Filter haben, wenn der
+    Entwurf nach dem Verfahren von Parks und Mc Clellan erfolgt?
+    (Antw. N=127)</pre><pre>(b) Welche Filterordnung muss ein IIR-Filter haben
+    f&uuml;r einen Cauer- (Antw. 9) und welche f&uuml;r ein
+    Tschebyscheff-Entwurf 2.Art (Antw. 20)?</pre><pre>(c) Ein Tiefpass (f_G =500 Hz) soll mit m&ouml;glichst wenig
+    Rechenaufwand realisiert werden. Die Sperrd&auml;mpfung bei 800 Hz muss
+    mindestens 48 dB sein. Welchen Filtertyp und welches Entwurfsverfahren
+    schlagen Sie vor? Wie viele Additionen und wie viele Multiplikationen
+    ben&ouml;tigt das Filter je Abtastwert? Geben Sie die Filterkoeffizienten
+    f&uuml;r das Filter.</pre><pre class="codeinput"><span class="comment">% clear all; close all;</span>
+<span class="comment">% filtdemo    % Paremater einstellen; Fenster offen lassen</span>
+<span class="comment">% pause       % weiter mit RETURN</span>
+<span class="comment">% [b,a] = filtdemo('getfilt')</span>
+<span class="comment">% figure(20);</span>
+<span class="comment">% zplane(b,a); title('PN-Diagramm des gew&auml;hlten Filters')</span>
+<span class="comment">%            % !!!!!! filtdemo.m schlie&szlig;en vor n&auml;chsten Aufruf</span>
+</pre><p class="footer"><br>
+            Published with MATLAB&reg; 7.3<br></p>
+      </div>
+      <!--
+##### SOURCE BEGIN #####
+%% Filterentwurf mit MATLAB 
+%
+%% (i) Bandpass mit Parks-McClellen
+%  Entwerfen Sie für ein digitales System mit der Abtastfrequenz 8kHz einen
+%  linearphasigen Bandpass im Frequenzbereich 2 bis 3 kHz mit minimaler
+%  Abweichung vom Sollfrequenzgang (firpm.m). Wie groß ist die Welligkeit
+%  für ein Filter mit 100 Koeffizienten?
+%  (c) DS Institut, Jorge Zuniga, WS 2011/12; Vers. 1.0 Vers. 1.1 B. Wir
+clear all; close all;      
+%% Eingaben
+fa=8000;                     % Abtastfrequenz
+fn=fa/2;                     % Nyquistfrequenz (= pi)
+fd1=2000;                    % Untere Grenzfrequenz
+fd2=3000;                    % Obere Grenzfrequenz
+N=100;                       % Anzahl von Koeffizienten
+%% Entwurf mit firpm.m
+% firpm entwirft ein linearphasiges FIR Filter mit Hilfe des Parks-McClellan
+% Algorithmus. firpm.m liefert die Koeffizienten bo,b1,b2,... 
+% Die Funktion firpm benötigt für den Entwurf folgende Daten:
+% Ein Vektor mit den norm. Frequenzen (f), die dazugehörige
+% Amplituden in eigenem Vektor (a).
+% Außerdem benötigt man die Anzahl von Koeffizienten minus eins (N-1).
+% fd1n=fd1/fn;                  % Norm. Frequenz fd1n=0.5
+% fd2n= ......;                 % Norm. Frequenz fd2n=0.75
+% f=[0  .......           1]; % Frequenzvektor 
+% a=[0  0     1   1   0   0];   % Amplitudenvertor
+% b=firpm(N-1,f,a);             % Filterentwurf
+%% Grafische Ausgabe
+% Ideales (gefordertes) und entworfenes Filter
+% [h,w]=freqz(b,1,1024);       % [h,w] = Amplituden und Frequenzen
+% figure(1); plot(f,a,'o',w/pi,abs(h));
+% legend('Ideal','firpm Entwurf','Location','Best')
+%% Bestimmung der Welligkeit
+% Der Durchlassbereich wird gezoomt und dann mit dem Werkzeug von MATLAB
+% gemessen
+% figure(2);
+% plot(f,a,'o',w/pi,abs(h));
+% text(0.1,1.01,'Welligkeit=0,008');
+% axis([0 1 0.95 1.05])
+%% Darstellung in dB
+% Die Verstärkung wird in dB dargestellt: 
+% $$ 10log(P_{out}/P_{in})^2:=10log(U_{out}/U_{in})^2=20log(U_{out}/U_{in}) $$
+% ACHTUNG:  
+% MATLAB berechnet die Eckfrequenz fc bei -6dB. Sie ist die Frequenz, bei der die 
+% normierte Verstärkung = 0,5 beträgt.  Diese Frequenz lässt sich folgendermaßen 
+% ausrechnen 
+% fc1=fs1n+(fd1n-fs1n)/2.    
+% Wobei fs1n und fd1n die normierten Sperr-/ und Durchlass-Frequenzen sind.                                       
+% Hier: fc1=0,45+(0,5-0,45)/2=0,475 (hier 1900Hz) und fc2=0,775 (3100Hz). 
+% Sonst ist fc als die Frequenz definiert, bei der die Verstärkung um 0,707 (-3 dB) 
+% abgesunken ist. 
+
+% figure(3);semilogy(w/pi,abs(h));
+% plot(w/pi,20*log10(abs(h)),w/pi,-6);xlabel('\omega/\pi'),ylabel('|G(\omega)|/dB')
+% legend('20log|G(\omega)|','Location','NorthWest');
+
+
+%% (ii) Vergleich der Methoden
+% Für ein digitales System mit der Abtastfrequenz f = 2kHz soll
+% ein Tiefpass mit der Grenzfrequenz 500 Hz und einer Sperrdämpfung
+% von 70 dB für Frequenzen oberhalb von 530Hz entworfen werden.
+% Verwenden Sie das Programm filtdemo.m um folgende
+% Fragen zu beantworten:
+%
+%  (a) Welche Filterordnung muss ein FIR-Filter haben, wenn der
+%      Entwurf nach dem Verfahren von Parks und Mc Clellan erfolgt?
+%      (Antw. N=127) 
+%
+%  (b) Welche Filterordnung muss ein IIR-Filter haben
+%      für einen Cauer- (Antw. 9) und welche für ein
+%      Tschebyscheff-Entwurf 2.Art (Antw. 20)?
+%
+%  (c) Ein Tiefpass (f_G =500 Hz) soll mit möglichst wenig
+%      Rechenaufwand realisiert werden. Die Sperrdämpfung bei 800 Hz muss 
+%      mindestens 48 dB sein. Welchen Filtertyp und welches Entwurfsverfahren
+%      schlagen Sie vor? Wie viele Additionen und wie viele Multiplikationen 
+%      benötigt das Filter je Abtastwert? Geben Sie die Filterkoeffizienten 
+%      für das Filter.
+
+% clear all; close all;
+% filtdemo    % Paremater einstellen; Fenster offen lassen 
+% pause       % weiter mit RETURN
+% [b,a] = filtdemo('getfilt')
+% figure(20); 
+% zplane(b,a); title('PN-Diagramm des gewählten Filters')
+%            % !!!!!! filtdemo.m schließen vor nächsten Aufruf
+
+
+
+##### SOURCE END #####
+-->
+   </body>
+</html>

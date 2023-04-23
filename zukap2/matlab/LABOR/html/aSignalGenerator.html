@@ -1,0 +1,137 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>aSignalGenerator</title><meta name="generator" content="MATLAB 7.12"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2012-07-31"><meta name="DC.source" content="aSignalGenerator.m"><style type="text/css">
+
+body {
+  background-color: white;
+  margin:10px;
+}
+
+h1 {
+  color: #990000; 
+  font-size: x-large;
+}
+
+h2 {
+  color: #990000;
+  font-size: medium;
+}
+
+/* Make the text shrink to fit narrow windows, but not stretch too far in 
+wide windows. */ 
+p,h1,h2,div.content div {
+  max-width: 600px;
+  /* Hack for IE6 */
+  width: auto !important; width: 600px;
+}
+
+pre.codeinput {
+  background: #EEEEEE;
+  padding: 10px;
+}
+@media print {
+  pre.codeinput {word-wrap:break-word; width:100%;}
+} 
+
+span.keyword {color: #0000FF}
+span.comment {color: #228B22}
+span.string {color: #A020F0}
+span.untermstring {color: #B20000}
+span.syscmd {color: #B28C00}
+
+pre.codeoutput {
+  color: #666666;
+  padding: 10px;
+}
+
+pre.error {
+  color: red;
+}
+
+p.footer {
+  text-align: right;
+  font-size: xx-small;
+  font-weight: lighter;
+  font-style: italic;
+  color: gray;
+}
+
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#1">Aufgabe: Signalgenerator</a></li><li><a href="#2">(i) Signalgenerator</a></li><li><a href="#3">(ii) Flankendetektion mit [1 -1]</a></li><li><a href="#4">(iii) Pulsformdetektion</a></li><li><a href="#5">(iv) Flankendetektion und Pulsformfilter bei Rauschen</a></li></ul></div><h2>Aufgabe: Signalgenerator<a name="1"></a></h2><p>(i) Bauen Sie mithilfe eines Digitalen Filters einen Signalgenerator  mit einstellbaren Periode P und einer Pulsform FORM. Erzeugen Sie damit  Rechteckpulse mit der Periode 16. (ii) Detektieren Sie die Pulsflanken mit einem Differenzierer mit der  Impulsantwort [1 -1]. (iii) Detektieren Sie die Pulse durch Faltung mit der gespiegelten  Pulsform (signalangepasstes Filter == Matched Filter == Korrelator). (iv) Addieren Sie Rauschen zum Signal und wiederholen Sie (ii) und (iii).</p><pre class="codeinput">clear <span class="string">all</span>; close <span class="string">all</span>;
+</pre><h2>(i) Signalgenerator<a name="2"></a></h2><pre class="codeinput">P = 16;
+<span class="comment">% FORM = [ ......];</span>
+<span class="comment">% delta = [zeros(1,9),1, zeros(1,49)];</span>
+<span class="comment">%</span>
+<span class="comment">% a = [...............];</span>
+<span class="comment">% x = filter(FORM,a,delta);</span>
+<span class="comment">% figure(1); subplot(3,2,1)</span>
+<span class="comment">% plot(x); title('Pulse'), ylim([-2, 2]);</span>
+</pre><h2>(ii) Flankendetektion mit [1 -1]<a name="3"></a></h2><p>b = [ 1 -1]; y = filter(b,1,x);</p><p>figure(1); subplot(3,2,3); plot(y,'r'); title('Flankendetektion'), ylim([-2, 2]); hold on; plot(x,'b.');hold off;</p><h2>(iii) Pulsformdetektion<a name="4"></a></h2><p>y2 = filter(fliplr(FORM)/sum(abs(FORM)),1,x);</p><p>figure(1); subplot(3,2,5); plot(y2,'r'); title('Pulsformdetektion');  ylim([-2, 2]); hold on; plot(x,'b.');hold off;</p><h2>(iv) Flankendetektion und Pulsformfilter bei Rauschen<a name="5"></a></h2><p>R = 0.5; % R = 0.15; x_r = x + R*randn(size(x));</p><p>figure(1); subplot(3,2,2); plot(x_r);title('... mit Rauschen');ylim([-2, 2]);</p><p>b = [ .....]; y_r = filter(.....);</p><p>figure(1); subplot(3,2,4); plot(y_r,'r'); title('Flankendetektion bei Rauschen'); ylim([-2, 2]); hold on; plot(x,'b.');</p><p>y2_r = filter(fliplr(FORM)/sum(abs(FORM)),1,x_r);</p><p>figure(1); subplot(3,2,6); plot(y2_r,'r'); title('Pulsformdetektion bei Rauschen');  ylim([-2, 2]); hold on; plot(x,'b.');hold off;</p><p>%% Beliebige Pulsform FORM = [ 0 1 2 0 -1 5 12 5 -4 0 1 2 1 0 0 0 0 ]/7;</p><p class="footer"><br>
+      Published with MATLAB&reg; 7.12<br></p></div><!--
+##### SOURCE BEGIN #####
+%% Aufgabe: Signalgenerator
+% (i) Bauen Sie mithilfe eines Digitalen Filters einen Signalgenerator 
+%  mit einstellbaren Periode P und einer Pulsform FORM. Erzeugen Sie damit
+%  Rechteckpulse mit der Periode 16.  
+% (ii) Detektieren Sie die Pulsflanken mit einem Differenzierer mit der
+%  Impulsantwort [1 -1].
+% (iii) Detektieren Sie die Pulse durch Faltung mit der gespiegelten 
+%  Pulsform (signalangepasstes Filter == Matched Filter == Korrelator).
+% (iv) Addieren Sie Rauschen zum Signal und wiederholen Sie (ii) und (iii).
+clear all; close all;
+%% (i) Signalgenerator
+P = 16;
+% FORM = [ ......];
+% delta = [zeros(1,9),1, zeros(1,49)];
+% 
+% a = [...............]; 
+% x = filter(FORM,a,delta);
+% figure(1); subplot(3,2,1)
+% plot(x); title('Pulse'), ylim([-2, 2]);
+
+%% (ii) Flankendetektion mit [1 -1]
+% b = [ 1 -1];
+% y = filter(b,1,x);
+% 
+% figure(1); subplot(3,2,3); 
+% plot(y,'r'); title('Flankendetektion'), ylim([-2, 2]);
+% hold on; plot(x,'b.');hold off;
+
+%% (iii) Pulsformdetektion
+% y2 = filter(fliplr(FORM)/sum(abs(FORM)),1,x);
+% 
+% figure(1); subplot(3,2,5);
+% plot(y2,'r'); title('Pulsformdetektion');  ylim([-2, 2]);
+% hold on; plot(x,'b.');hold off;
+
+%% (iv) Flankendetektion und Pulsformfilter bei Rauschen
+% R = 0.5;
+% % R = 0.15;
+% x_r = x + R*randn(size(x));
+% 
+% figure(1); subplot(3,2,2); 
+% plot(x_r);title('... mit Rauschen');ylim([-2, 2]);
+% 
+% b = [ .....];
+% y_r = filter(.....);
+% 
+% figure(1); subplot(3,2,4); 
+% plot(y_r,'r'); title('Flankendetektion bei Rauschen'); ylim([-2, 2]);
+% hold on; plot(x,'b.');
+% 
+% y2_r = filter(fliplr(FORM)/sum(abs(FORM)),1,x_r);
+% 
+% figure(1); subplot(3,2,6);
+% plot(y2_r,'r'); title('Pulsformdetektion bei Rauschen');  ylim([-2, 2]);
+% hold on; plot(x,'b.');hold off;
+% 
+% %% Beliebige Pulsform
+% FORM = [ 0 1 2 0 -1 5 12 5 -4 0 1 2 1 0 0 0 0 ]/7;
+
+##### SOURCE END #####
+--></body></html>

@@ -1,0 +1,194 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN">
+<html xmlns:mwsh="http://www.mathworks.com/namespace/mcode/v1/syntaxhighlight.dtd">
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+      <!--
+This HTML is auto-generated from an M-file.
+To make changes, update the M-file and republish this document.
+      -->
+      <title>aBandsperre</title>
+      <meta name="generator" content="MATLAB 7.3">
+      <meta name="date" content="2012-08-23">
+      <meta name="m-file" content="aBandsperre"><style>
+
+body {
+  background-color: white;
+  margin:10px;
+}
+
+h1 {
+  color: #990000; 
+  font-size: x-large;
+}
+
+h2 {
+  color: #990000;
+  font-size: medium;
+}
+
+/* Make the text shrink to fit narrow windows, but not stretch too far in 
+wide windows. */ 
+p,h1,h2,div.content div {
+  max-width: 600px;
+  /* Hack for IE6 */
+  width: auto !important; width: 600px;
+}
+
+pre.codeinput {
+  background: #EEEEEE;
+  padding: 10px;
+}
+@media print {
+  pre.codeinput {word-wrap:break-word; width:100%;}
+} 
+
+span.keyword {color: #0000FF}
+span.comment {color: #228B22}
+span.string {color: #A020F0}
+span.untermstring {color: #B20000}
+span.syscmd {color: #B28C00}
+
+pre.codeoutput {
+  color: #666666;
+  padding: 10px;
+}
+
+pre.error {
+  color: red;
+}
+
+p.footer {
+  text-align: right;
+  font-size: xx-small;
+  font-weight: lighter;
+  font-style: italic;
+  color: gray;
+}
+
+  </style></head>
+   <body>
+      <div class="content">
+         <h2>Contents</h2>
+         <div>
+            <ul>
+               <li><a href="#2">Sinuston</a></li>
+               <li><a href="#3">(i) Bandsperre</a></li>
+               <li><a href="#4">(ii) Kritische Parameter</a></li>
+               <li><a href="#5">Ausblick: PN-Diagramm und Frequenzgang</a></li>
+            </ul>
+         </div><pre class="codeinput"><span class="comment">% % Aufgabe: Bandsperre</span>
+<span class="comment">% (i)Erzeugen Sie einen stark verrauschten Sinuston mit der Frequenz f=400Hz</span>
+<span class="comment">% f&uuml;r ein System mit der Abtastfrequnz f_A= 8kHz. Filtern Sie das Signal</span>
+<span class="comment">% mit einem ARMA-Filter mit den transversalen bzw. rekursiven Koeffizienten</span>
+<span class="comment">% b = [1, -2cos(2pi*f/f_A) 1] bzw. a = [-C*2cos(2pi*f/f_A)) +C^2]] mit C = 0.98 und</span>
+<span class="comment">% C = 0.85 und stellen Sie die Ergebisse im Zeitbereich und als Spektrogramm dar.</span>
+<span class="comment">% Skizzieren das Realisierungsschema in  Direktform 1.</span>
+<span class="comment">% (ii) Welche Parameter oder Parameterkombinationen der Bandsperre sch&auml;tzen</span>
+<span class="comment">% Sie als kritisch ein? &Uuml;berpr&uuml;fen Sie dies durch eine Simulation.</span>
+<span class="comment">% (c) HSM, B. Wir 26.7.2012</span>
+clear <span class="string">all</span>; close <span class="string">all</span>;
+</pre><h2>Sinuston<a name="2"></a></h2><pre class="codeinput">F_A = 8000   <span class="comment">% Abtastfrequenz in Hz</span>
+T_A = 1/F_A  <span class="comment">% Abtastabstand in s</span>
+WINDOW = 64;  <span class="comment">% Fenster f&uuml;r Spektrogramm</span>
+F = 400;     <span class="comment">% Sinus-Frequenz in Hz</span>
+<span class="comment">% F = 3900;</span>
+<span class="comment">% F = 100;</span>
+t = 0:T_A: T_A*999;
+x = sin (2*pi*F*t);
+r = randn(size(t));
+x_r = x + r;
+
+figure(1)
+subplot(2,2,1); plot(t(1:200),x(1:200),<span class="string">'b'</span>,t(1:200),x_r(1:200),<span class="string">'r'</span>);
+title(<span class="string">'Sinussignal'</span>);legend(<span class="string">'Original'</span>,<span class="string">'mit Rauschen'</span>);
+subplot(2,2,2)
+spectrogram(x_r,WINDOW);colorbar;title(<span class="string">'Spektrogramm/dB'</span>)
+</pre><pre class="codeoutput">
+F_A =
+
+        8000
+
+
+T_A =
+
+  1.2500e-004
+
+</pre><img vspace="5" hspace="5" src="aBandsperre_01.png"> <h2>(i) Bandsperre<a name="3"></a></h2><pre class="codeinput">C = 0.98
+<span class="comment">%C = 0.85</span>
+<span class="comment">% C = 0.999;</span>
+<span class="comment">% b = ..... ; a = ............;</span>
+
+<span class="comment">% y = filter(......);</span>
+
+<span class="comment">% subplot(2,2,3); plot(t(1:200),y(1:200),'b',t(1:200),r(1:200),'g',t(1:200),x_r(1:200)- y(1:200),'r');</span>
+<span class="comment">% title('.. nach Bandsperre');legend('Filterausgang','Rauschanteil','rek. Sinus')</span>
+<span class="comment">% subplot(2,2,4);</span>
+<span class="comment">% spectrogram(y,WINDOW);colorbar;title('Spektrogramm/dB')</span>
+</pre><pre class="codeoutput">
+C =
+
+    0.9800
+
+</pre><h2>(ii) Kritische Parameter<a name="4"></a></h2>
+         <h2>Ausblick: PN-Diagramm und Frequenzgang<a name="5"></a></h2>
+         <p>figure(2); zplane(b,a); figure(3); freqz(b,a,512);</p>
+         <p class="footer"><br>
+            Published with MATLAB&reg; 7.3<br></p>
+      </div>
+      <!--
+##### SOURCE BEGIN #####
+% % Aufgabe: Bandsperre
+% (i)Erzeugen Sie einen stark verrauschten Sinuston mit der Frequenz f=400Hz 
+% für ein System mit der Abtastfrequnz f_A= 8kHz. Filtern Sie das Signal 
+% mit einem ARMA-Filter mit den transversalen bzw. rekursiven Koeffizienten 
+% b = [1, -2cos(2pi*f/f_A) 1] bzw. a = [-C*2cos(2pi*f/f_A)) +C^2]] mit C = 0.98 und
+% C = 0.85 und stellen Sie die Ergebisse im Zeitbereich und als Spektrogramm dar.
+% Skizzieren das Realisierungsschema in  Direktform 1.
+% (ii) Welche Parameter oder Parameterkombinationen der Bandsperre schätzen 
+% Sie als kritisch ein? Überprüfen Sie dies durch eine Simulation. 
+% (c) HSM, B. Wir 26.7.2012 
+clear all; close all;
+%% Sinuston 
+F_A = 8000   % Abtastfrequenz in Hz
+T_A = 1/F_A  % Abtastabstand in s
+WINDOW = 64;  % Fenster für Spektrogramm
+F = 400;     % Sinus-Frequenz in Hz
+% F = 3900; 
+% F = 100;
+t = 0:T_A: T_A*999;
+x = sin (2*pi*F*t);
+r = randn(size(t));
+x_r = x + r;
+
+figure(1)
+subplot(2,2,1); plot(t(1:200),x(1:200),'b',t(1:200),x_r(1:200),'r'); 
+title('Sinussignal');legend('Original','mit Rauschen');
+subplot(2,2,2)
+spectrogram(x_r,WINDOW);colorbar;title('Spektrogramm/dB')
+
+%% (i) Bandsperre
+C = 0.98
+%C = 0.85
+% C = 0.999;
+% b = ..... ; a = ............;
+
+% y = filter(......);
+
+% subplot(2,2,3); plot(t(1:200),y(1:200),'b',t(1:200),r(1:200),'g',t(1:200),x_r(1:200)- y(1:200),'r'); 
+% title('.. nach Bandsperre');legend('Filterausgang','Rauschanteil','rek. Sinus')
+% subplot(2,2,4);
+% spectrogram(y,WINDOW);colorbar;title('Spektrogramm/dB')
+
+%% (ii) Kritische Parameter
+%
+%
+%% Ausblick: PN-Diagramm und Frequenzgang
+% figure(2); zplane(b,a);
+% figure(3); freqz(b,a,512);
+##### SOURCE END #####
+-->
+   </body>
+</html>

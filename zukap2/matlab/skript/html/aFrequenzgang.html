@@ -1,0 +1,167 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN">
+<html xmlns:mwsh="http://www.mathworks.com/namespace/mcode/v1/syntaxhighlight.dtd">
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+      <!--
+This HTML is auto-generated from an M-file.
+To make changes, update the M-file and republish this document.
+      -->
+      <title>aFrequenzgang</title>
+      <meta name="generator" content="MATLAB 7.3">
+      <meta name="date" content="2012-08-23">
+      <meta name="m-file" content="aFrequenzgang"><style>
+
+body {
+  background-color: white;
+  margin:10px;
+}
+
+h1 {
+  color: #990000; 
+  font-size: x-large;
+}
+
+h2 {
+  color: #990000;
+  font-size: medium;
+}
+
+/* Make the text shrink to fit narrow windows, but not stretch too far in 
+wide windows. */ 
+p,h1,h2,div.content div {
+  max-width: 600px;
+  /* Hack for IE6 */
+  width: auto !important; width: 600px;
+}
+
+pre.codeinput {
+  background: #EEEEEE;
+  padding: 10px;
+}
+@media print {
+  pre.codeinput {word-wrap:break-word; width:100%;}
+} 
+
+span.keyword {color: #0000FF}
+span.comment {color: #228B22}
+span.string {color: #A020F0}
+span.untermstring {color: #B20000}
+span.syscmd {color: #B28C00}
+
+pre.codeoutput {
+  color: #666666;
+  padding: 10px;
+}
+
+pre.error {
+  color: red;
+}
+
+p.footer {
+  text-align: right;
+  font-size: xx-small;
+  font-weight: lighter;
+  font-style: italic;
+  color: gray;
+}
+
+  </style></head>
+   <body>
+      <div class="content">
+         <h2>Contents</h2>
+         <div>
+            <ul>
+               <li><a href="#1">Aufgabe: Frequenzgang</a></li>
+               <li><a href="#2">(i) Realisierung durch FIR-Filter</a></li>
+               <li><a href="#3">(ii) Frequenzgang</a></li>
+               <li><a href="#4">(iii) G(z)</a></li>
+               <li><a href="#5">(iv) PN-Diagramm</a></li>
+               <li><a href="#6">(v) Skizze (h&auml;ndisch erg&auml;nzt)</a></li>
+               <li><a href="#7">Erg&auml;nzung: Frequenzgang mit MAtlab</a></li>
+            </ul>
+         </div>
+         <h2>Aufgabe: Frequenzgang<a name="1"></a></h2>
+         <p>F&uuml;r ein Filter mit der Impulsantwort \( g[k] = [ 1 1] \) sind gesucht: (i) ein Realisierungsschema, (ii) der Frequenzgang,
+            (iii) die komplexe &Uuml;bertragungsfunktion, (iv) die Pole und Nullstellen mit PN-Diagramm und (v) eine Skizze des Amplitudengangs
+            mit Bezug zum PN-Diagramm. (c) HSM, B. Wirnitzer 31.7.2012
+         </p><pre class="codeinput">clear <span class="string">all</span>; close <span class="string">all</span>;
+</pre><h2>(i) Realisierung durch FIR-Filter<a name="2"></a></h2><pre class="codeinput">b = [1 1];
+a = 1;
+IMPULS = [1 0 0 0 0 0 0 0 0 0 0 0];
+y = filter(b,a,IMPULS);
+
+figure(1); subplot(3,2,1);
+stem(y); title(<span class="string">'Impulsantwort'</span>);
+</pre><img vspace="5" hspace="5" src="aFrequenzgang_01.png"> <h2>(ii) Frequenzgang<a name="3"></a></h2>
+         <p>Sp&auml;ter besser freqz.m verwenden</p><pre class="codeinput">Omega = 0:0.1:2*pi;
+<span class="comment">% G_O = 1 + exp(- j*Omega);</span>
+G_O = exp(- 1j * Omega/2).* (2 * cos(Omega/2));
+
+figure(1); subplot(3,2,3);
+plot(Omega,abs(G_O)); title(<span class="string">'Amplitudengang'</span>);
+xlabel(<span class="string">'\Omega'</span>); xlim([0 2*pi ]);
+subplot(3,2,5);
+plot(Omega,angle(G_O)); title(<span class="string">'Phasengang'</span>);
+xlabel(<span class="string">'\Omega'</span>); xlim([0 2*pi ]);
+</pre><img vspace="5" hspace="5" src="aFrequenzgang_02.png"> <h2>(iii) G(z)<a name="4"></a></h2>
+         <p>G_z = z^0 + z^-1</p>
+         <h2>(iv) PN-Diagramm<a name="5"></a></h2><pre class="codeinput">subplot(3,2,[2,4]), zplane(b,a);
+</pre><img vspace="5" hspace="5" src="aFrequenzgang_03.png"> <h2>(v) Skizze (h&auml;ndisch erg&auml;nzt)<a name="6"></a></h2><pre class="codeinput">figure(1); subplot(3,2,6);
+plot(Omega,abs(G_O)); title(<span class="string">'Amplitudengang'</span>);
+xlim([0 2*pi ]);
+</pre><img vspace="5" hspace="5" src="aFrequenzgang_04.png"> <h2>Erg&auml;nzung: Frequenzgang mit MAtlab<a name="7"></a></h2><pre class="codeinput">figure(2)
+freqz(b,a, 512); title(<span class="string">'Frequenzgang mit freqz.m'</span>)
+</pre><img vspace="5" hspace="5" src="aFrequenzgang_05.png"> <p class="footer"><br>
+            Published with MATLAB&reg; 7.3<br></p>
+      </div>
+      <!--
+##### SOURCE BEGIN #####
+%% Aufgabe: Frequenzgang
+% Für ein Filter mit der Impulsantwort \( g[k] = [ 1 1] \) sind gesucht: 
+% (i) ein Realisierungsschema, (ii) der Frequenzgang, (iii) die komplexe Übertragungsfunktion, 
+% (iv) die Pole und Nullstellen mit PN-Diagramm und (v) eine Skizze des Amplitudengangs mit Bezug zum PN-Diagramm. 
+% (c) HSM, B. Wirnitzer 31.7.2012
+clear all; close all;
+%% (i) Realisierung durch FIR-Filter
+b = [1 1];
+a = 1;
+IMPULS = [1 0 0 0 0 0 0 0 0 0 0 0];
+y = filter(b,a,IMPULS);
+
+figure(1); subplot(3,2,1);
+stem(y); title('Impulsantwort');
+%% (ii) Frequenzgang
+% Später besser freqz.m verwenden
+Omega = 0:0.1:2*pi;
+% G_O = 1 + exp(- j*Omega); 
+G_O = exp(- 1j * Omega/2).* (2 * cos(Omega/2));
+
+figure(1); subplot(3,2,3); 
+plot(Omega,abs(G_O)); title('Amplitudengang'); 
+xlabel('\Omega'); xlim([0 2*pi ]);
+subplot(3,2,5);
+plot(Omega,angle(G_O)); title('Phasengang'); 
+xlabel('\Omega'); xlim([0 2*pi ]);
+%% (iii) G(z)
+% G_z = z^0 + z^-1
+
+%% (iv) PN-Diagramm
+subplot(3,2,[2,4]), zplane(b,a);
+
+%% (v) Skizze (händisch ergänzt)
+
+figure(1); subplot(3,2,6); 
+plot(Omega,abs(G_O)); title('Amplitudengang'); 
+xlim([0 2*pi ]);
+
+%% Ergänzung: Frequenzgang mit MAtlab
+
+figure(2)
+freqz(b,a, 512); title('Frequenzgang mit freqz.m')
+##### SOURCE END #####
+-->
+   </body>
+</html>

@@ -1,0 +1,494 @@
+Model {
+  Name			  "multirate_d4_cauer2_pc"
+  Version		  4.00
+  SampleTimeColors	  off
+  LibraryLinkDisplay	  "none"
+  WideLines		  off
+  ShowLineDimensions	  off
+  ShowPortDataTypes	  off
+  ShowStorageClass	  off
+  ExecutionOrder	  off
+  RecordCoverage	  off
+  CovPath		  "/"
+  CovSaveName		  "covdata"
+  CovMetricSettings	  "dw"
+  CovNameIncrementing	  off
+  CovHtmlReporting	  on
+  BlockNameDataTip	  off
+  BlockParametersDataTip  off
+  BlockDescriptionStringDataTip	off
+  ToolBar		  on
+  StatusBar		  on
+  BrowserShowLibraryLinks off
+  BrowserLookUnderMasks	  off
+  Created		  "Mon May 05 14:50:18 2003"
+  UpdateHistory		  "UpdateHistoryNever"
+  ModifiedByFormat	  "%<Auto>"
+  LastModifiedBy	  "wir"
+  ModifiedDateFormat	  "%<Auto>"
+  LastModifiedDate	  "Fri Sep 10 12:30:39 2004"
+  ModelVersionFormat	  "1.%<AutoIncrement:7>"
+  ConfigurationManager	  "None"
+  SimParamPage		  "Solver"
+  StartTime		  "0.0"
+  StopTime		  "5.0"
+  SolverMode		  "SingleTasking"
+  Solver		  "FixedStepDiscrete"
+  RelTol		  "1e-3"
+  AbsTol		  "auto"
+  Refine		  "1"
+  MaxStep		  "auto"
+  MinStep		  "auto"
+  MaxNumMinSteps	  "-1"
+  InitialStep		  "auto"
+  FixedStep		  "auto"
+  MaxOrder		  5
+  OutputOption		  "RefineOutputTimes"
+  OutputTimes		  "[]"
+  LoadExternalInput	  off
+  ExternalInput		  "[t, u]"
+  SaveTime		  on
+  TimeSaveName		  "tout"
+  SaveState		  off
+  StateSaveName		  "xout"
+  SaveOutput		  on
+  OutputSaveName	  "yout"
+  LoadInitialState	  off
+  InitialState		  "xInitial"
+  SaveFinalState	  off
+  FinalStateName	  "xFinal"
+  SaveFormat		  "Array"
+  LimitDataPoints	  off
+  MaxDataPoints		  "1000"
+  Decimation		  "1"
+  AlgebraicLoopMsg	  "warning"
+  MinStepSizeMsg	  "warning"
+  UnconnectedInputMsg	  "warning"
+  UnconnectedOutputMsg	  "warning"
+  UnconnectedLineMsg	  "warning"
+  InheritedTsInSrcMsg	  "warning"
+  SingleTaskRateTransMsg  "none"
+  MultiTaskRateTransMsg	  "error"
+  IntegerOverflowMsg	  "warning"
+  CheckForMatrixSingularity "none"
+  UnnecessaryDatatypeConvMsg "none"
+  Int32ToFloatConvMsg	  "warning"
+  InvalidFcnCallConnMsg	  "error"
+  SignalLabelMismatchMsg  "none"
+  LinearizationMsg	  "none"
+  VectorMatrixConversionMsg "none"
+  SfunCompatibilityCheckMsg "none"
+  BlockPriorityViolationMsg "warning"
+  ArrayBoundsChecking	  "none"
+  ConsistencyChecking	  "none"
+  ZeroCross		  on
+  Profile		  off
+  SimulationMode	  "normal"
+  RTWSystemTargetFile	  "ert.tlc"
+  RTWInlineParameters	  off
+  RTWRetainRTWFile	  off
+  RTWTemplateMakefile	  "ert_default_tmf"
+  RTWMakeCommand	  "make_rtw"
+  RTWGenerateCodeOnly	  on
+  TLCProfiler		  off
+  TLCDebug		  off
+  TLCCoverage		  off
+  AccelSystemTargetFile	  "accel.tlc"
+  AccelTemplateMakefile	  "accel_default_tmf"
+  AccelMakeCommand	  "make_rtw"
+  TryForcingSFcnDF	  off
+  ExtModeMexFile	  "no_ext_comm"
+  ExtModeBatchMode	  off
+  ExtModeTrigType	  "manual"
+  ExtModeTrigMode	  "normal"
+  ExtModeTrigPort	  "1"
+  ExtModeTrigElement	  "any"
+  ExtModeTrigDuration	  1000
+  ExtModeTrigHoldOff	  0
+  ExtModeTrigDelay	  0
+  ExtModeTrigDirection	  "rising"
+  ExtModeTrigLevel	  0
+  ExtModeArchiveMode	  "off"
+  ExtModeAutoIncOneShot	  off
+  ExtModeIncDirWhenArm	  off
+  ExtModeAddSuffixToVar	  off
+  ExtModeWriteAllDataToWs off
+  ExtModeArmWhenConnect	  on
+  ExtModeSkipDownloadWhenConnect off
+  ExtModeLogAll		  on
+  ExtModeAutoUpdateStatusClock on
+  OptimizeBlockIOStorage  on
+  BufferReuse		  on
+  ParameterPooling	  on
+  BlockReductionOpt	  on
+  RTWExpressionDepthLimit 5
+  BooleanDataType	  off
+  BlockDefaults {
+    Orientation		    "right"
+    ForegroundColor	    "black"
+    BackgroundColor	    "white"
+    DropShadow		    off
+    NamePlacement	    "normal"
+    FontName		    "Helvetica"
+    FontSize		    10
+    FontWeight		    "normal"
+    FontAngle		    "normal"
+    ShowName		    on
+  }
+  AnnotationDefaults {
+    HorizontalAlignment	    "center"
+    VerticalAlignment	    "middle"
+    ForegroundColor	    "black"
+    BackgroundColor	    "white"
+    DropShadow		    off
+    FontName		    "Helvetica"
+    FontSize		    10
+    FontWeight		    "normal"
+    FontAngle		    "normal"
+  }
+  LineDefaults {
+    FontName		    "Helvetica"
+    FontSize		    9
+    FontWeight		    "normal"
+    FontAngle		    "normal"
+  }
+  System {
+    Name		    "multirate_d4_cauer2_pc"
+    Location		    [105, 95, 934, 405]
+    Open		    on
+    ModelBrowserVisibility  off
+    ModelBrowserWidth	    200
+    ScreenColor		    "white"
+    PaperOrientation	    "landscape"
+    PaperPositionMode	    "auto"
+    PaperType		    "A4"
+    PaperUnits		    "centimeters"
+    ZoomFactor		    "100"
+    ReportName		    "simulink-default.rpt"
+    Block {
+      BlockType		      DiscreteFilter
+      Name		      " Cauer - TP "
+      Position		      [510, 92, 570, 128]
+      BackgroundColor	      "green"
+      Numerator		      "b"
+      Denominator	      "a"
+      SampleTime	      "-1"
+      Realization	      "auto"
+      RTWStateStorageClass    "Auto"
+    }
+    Block {
+      BlockType		      DiscreteFilter
+      Name		      " Cauer -TP "
+      Position		      [230, 92, 290, 128]
+      BackgroundColor	      "green"
+      Numerator		      "b"
+      Denominator	      "a"
+      SampleTime	      "-1"
+      Realization	      "auto"
+      RTWStateStorageClass    "Auto"
+    }
+    Block {
+      BlockType		      Reference
+      Name		      "Buffer"
+      Ports		      [1, 1]
+      Position		      [635, 85, 685, 135]
+      SourceBlock	      "dspbuff3/Buffer"
+      SourceType	      "Buffer"
+      N			      "256"
+      V			      "0"
+      ic		      "0"
+    }
+    Block {
+      BlockType		      Reference
+      Name		      "Downsample"
+      Ports		      [1, 1]
+      Position		      [325, 93, 360, 127]
+      BackgroundColor	      "lightBlue"
+      SourceBlock	      "dspsigops/Downsample"
+      SourceType	      "Downsample"
+      N			      "4"
+      phase		      "0"
+      ic		      "0"
+      smode		      "Allow multirate"
+      fmode		      "Maintain input frame size"
+    }
+    Block {
+      BlockType		      SubSystem
+      Name		      "More Info1"
+      Ports		      []
+      Position		      [170, 15, 368, 72]
+      BackgroundColor	      "red"
+      DropShadow	      on
+      ShowName		      off
+      ShowPortLabels	      on
+      TreatAsAtomicUnit	      off
+      RTWSystemCode	      "Auto"
+      RTWFcnNameOpts	      "Auto"
+      RTWFileNameOpts	      "Auto"
+      MaskDisplay	      "disp(' Aufgaben')"
+      MaskIconFrame	      on
+      MaskIconOpaque	      on
+      MaskIconRotate	      "none"
+      MaskIconUnits	      "autoscale"
+      System {
+	Name			"More Info1"
+	Location		[54, 160, 1010, 732]
+	Open			off
+	ModelBrowserVisibility	off
+	ModelBrowserWidth	200
+	ScreenColor		"white"
+	PaperOrientation	"landscape"
+	PaperPositionMode	"auto"
+	PaperType		"A4"
+	PaperUnits		"centimeters"
+	ZoomFactor		"100"
+	Annotation {
+	  Position		  [99, 247]
+	  HorizontalAlignment	  "left"
+	  Text			  "\nAbtastratenreduktion\n(B.Wir 23.5.03 ver "
+" 0.1)\n\nCauer-Filter sind für die Audioverarbeitung besonders geeignet, da s"
+"ie eine hohe \nFlankensteilheit bei geringer Filterordnung ermöglichen. \nDie"
+" nichtlineare Phase der Cauer-Filter ist wegen dee Phasentaubheit des Gehörs "
+"unwesentlich.\n\nMit den Feld 'Filterentwurf' können Sie unterschiedliche Fil"
+"terentwurfmethoden testen. \nDie Übernahme der Filterkoeffizienten erfolgt be"
+"i geöffneten Entwurfsfenster! \n\n\nAufgaben:\n\n0) Doppelklick auf das Feld "
+"'Default Cauer-Filter' initialisiert die beiden grünen  Cauer-Tiefpässe. \n  "
+"  Starten Sie die Simulation! \n    Starten Sie den Filterentwurf. Welche Gre"
+"nzfrequenz und welche Sperrdämfung sind sinnvoll?\n    Schätzen Sie den Reche"
+"nzeitbedarf bei einem  Elliptischen (Cauer-), Fenster- und REMEZ-Entwurf ab!"
+"\n\n1) Entfernen Sie den grünen Cauer-Tiefpass am Ausgang und starten Sie die"
+" Simulation. Erklären Sie\n    die Störungen indem Sie den Betrag des Signals"
+"pektrumdurch entlang der Signalkette skizzieren.\n\n2) Entfernen Sie nun zusä"
+"tzlich den  Cauer-Tiefpass am Eingang und erklären Sie die Störungen.\n\n3) E"
+"ntfernen Sie nur den  Cauer-Tiefpass am Eingang und erklären Sie die Störunge"
+"n.\n"
+	  FontName		  "Arial"
+	  FontSize		  14
+	}
+      }
+    }
+    Block {
+      BlockType		      Reference
+      Name		      "Musik"
+      Ports		      [0, 1]
+      Position		      [15, 84, 125, 136]
+      SourceBlock	      "dspsrcs3/From Wave\nFile"
+      SourceType	      "From Wave File"
+      FileName		      "speech_dft"
+      SamplesPerFrame	      "256"
+      MinBufSize	      "256"
+    }
+    Block {
+      BlockType		      SubSystem
+      Name		      "Original\nSignal1"
+      Description	      "Filterentwurf übernehmen"
+      Ports		      []
+      Position		      [239, 195, 464, 231]
+      ForegroundColor	      "green"
+      ShowName		      off
+      OpenFcn		      "[b,a] = filtdemo('getfilt')"
+      FontName		      "Arial"
+      FontSize		      12
+      ShowPortLabels	      off
+      TreatAsAtomicUnit	      off
+      RTWSystemCode	      "Auto"
+      RTWFcnNameOpts	      "Auto"
+      RTWFileNameOpts	      "Auto"
+      MaskType		      "Cauer-Filter"
+      MaskDisplay	      "disp('Momentanen Entwurf übernehmen')"
+      MaskIconFrame	      on
+      MaskIconOpaque	      on
+      MaskIconRotate	      "none"
+      MaskIconUnits	      "autoscale"
+      System {
+	Name			"Original\nSignal1"
+	Location		[203, 331, 569, 538]
+	Open			off
+	ModelBrowserVisibility	off
+	ModelBrowserWidth	200
+	ScreenColor		"white"
+	PaperOrientation	"landscape"
+	PaperPositionMode	"auto"
+	PaperType		"A4"
+	PaperUnits		"centimeters"
+	ZoomFactor		"100"
+      }
+    }
+    Block {
+      BlockType		      SubSystem
+      Name		      "Original\nSignal2"
+      Description	      "Filterentwurf"
+      Ports		      []
+      Position		      [94, 171, 206, 231]
+      ForegroundColor	      "green"
+      ShowName		      off
+      OpenFcn		      "filtdemo"
+      FontName		      "Arial"
+      FontSize		      12
+      ShowPortLabels	      off
+      TreatAsAtomicUnit	      off
+      RTWSystemCode	      "Auto"
+      RTWFcnNameOpts	      "Auto"
+      RTWFileNameOpts	      "Auto"
+      MaskType		      "Cauer-Filter"
+      MaskDisplay	      "disp('Filterentwurf')"
+      MaskIconFrame	      on
+      MaskIconOpaque	      on
+      MaskIconRotate	      "none"
+      MaskIconUnits	      "autoscale"
+      System {
+	Name			"Original\nSignal2"
+	Location		[203, 331, 569, 538]
+	Open			off
+	ModelBrowserVisibility	off
+	ModelBrowserWidth	200
+	ScreenColor		"white"
+	PaperOrientation	"landscape"
+	PaperPositionMode	"auto"
+	PaperType		"A4"
+	PaperUnits		"centimeters"
+	ZoomFactor		"100"
+      }
+    }
+    Block {
+      BlockType		      SubSystem
+      Name		      "Original\nSignal3"
+      Description	      "Initialisierung Cauer-Filter"
+      Ports		      []
+      Position		      [394, 16, 554, 71]
+      ForegroundColor	      "green"
+      ShowName		      off
+      OpenFcn		      "b = [    0.0237    0.0129    0.0129    0.0237] "
+"; a = [  1.0000   -2.2668    2.0908   -0.7508];"
+      FontName		      "Arial"
+      FontSize		      12
+      ShowPortLabels	      off
+      TreatAsAtomicUnit	      off
+      RTWSystemCode	      "Auto"
+      RTWFcnNameOpts	      "Auto"
+      RTWFileNameOpts	      "Auto"
+      MaskType		      "Cauer-Filter"
+      MaskDisplay	      "disp('Init default Cauer-Filter')\n"
+      MaskIconFrame	      on
+      MaskIconOpaque	      on
+      MaskIconRotate	      "none"
+      MaskIconUnits	      "autoscale"
+      System {
+	Name			"Original\nSignal3"
+	Location		[203, 331, 569, 538]
+	Open			off
+	ModelBrowserVisibility	off
+	ModelBrowserWidth	200
+	ScreenColor		"white"
+	PaperOrientation	"landscape"
+	PaperPositionMode	"auto"
+	PaperType		"A4"
+	PaperUnits		"centimeters"
+	ZoomFactor		"100"
+      }
+    }
+    Block {
+      BlockType		      Reference
+      Name		      "To Wave\nDevice"
+      Ports		      [1]
+      Position		      [730, 84, 785, 136]
+      SourceBlock	      "dspsnks3/To Wave\nDevice"
+      SourceType	      "To Wave Device"
+      bufDuration	      "2"
+      initDelay		      "0.1"
+      useDefaultDevice	      on
+      userDeviceID	      "1"
+    }
+    Block {
+      BlockType		      Reference
+      Name		      "Unbuffer"
+      Ports		      [1, 1]
+      Position		      [150, 86, 200, 134]
+      SourceBlock	      "dspbuff3/Unbuffer"
+      SourceType	      "Unbuffer"
+      ic		      "0"
+    }
+    Block {
+      BlockType		      Reference
+      Name		      "Upsample"
+      Ports		      [1, 1]
+      Position		      [430, 93, 465, 127]
+      BackgroundColor	      "lightBlue"
+      SourceBlock	      "dspsigops/Upsample"
+      SourceType	      "Upsample"
+      N			      "4"
+      phase		      "0"
+      ic		      "0"
+      mode		      "Maintain input frame size"
+    }
+    Block {
+      BlockType		      Gain
+      Name		      "gain"
+      Position		      [380, 95, 410, 125]
+      Gain		      "16"
+      Multiplication	      "Element-wise(K.*u)"
+      SaturateOnIntegerOverflow	on
+    }
+    Line {
+      Points		      [0, 0; 0, 0]
+    }
+    Line {
+      SrcBlock		      "gain"
+      SrcPort		      1
+      DstBlock		      "Upsample"
+      DstPort		      1
+    }
+    Line {
+      SrcBlock		      " Cauer - TP "
+      SrcPort		      1
+      DstBlock		      "Buffer"
+      DstPort		      1
+    }
+    Line {
+      SrcBlock		      " Cauer -TP "
+      SrcPort		      1
+      DstBlock		      "Downsample"
+      DstPort		      1
+    }
+    Line {
+      SrcBlock		      "Musik"
+      SrcPort		      1
+      DstBlock		      "Unbuffer"
+      DstPort		      1
+    }
+    Line {
+      SrcBlock		      "Unbuffer"
+      SrcPort		      1
+      DstBlock		      " Cauer -TP "
+      DstPort		      1
+    }
+    Line {
+      SrcBlock		      "Downsample"
+      SrcPort		      1
+      DstBlock		      "gain"
+      DstPort		      1
+    }
+    Line {
+      SrcBlock		      "Upsample"
+      SrcPort		      1
+      DstBlock		      " Cauer - TP "
+      DstPort		      1
+    }
+    Line {
+      SrcBlock		      "Buffer"
+      SrcPort		      1
+      DstBlock		      "To Wave\nDevice"
+      DstPort		      1
+    }
+    Annotation {
+      Position		      [158, 74]
+      HorizontalAlignment     "right"
+      VerticalAlignment	      "bottom"
+      BackgroundColor	      "cyan"
+      Text		      "\nAbtastratenreduktion\n(wir ver.1.0/03)\n"
+      FontName		      "Arial"
+      FontSize		      14
+      FontWeight	      "bold"
+    }
+  }
+}

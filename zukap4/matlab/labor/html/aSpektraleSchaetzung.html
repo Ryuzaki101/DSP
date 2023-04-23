@@ -1,0 +1,234 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>aSpektraleSchaetzung</title><meta name="generator" content="MATLAB 7.12"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2012-08-21"><meta name="DC.source" content="aSpektraleSchaetzung.m"><style type="text/css">
+
+body {
+  background-color: white;
+  margin:10px;
+}
+
+h1 {
+  color: #990000; 
+  font-size: x-large;
+}
+
+h2 {
+  color: #990000;
+  font-size: medium;
+}
+
+/* Make the text shrink to fit narrow windows, but not stretch too far in 
+wide windows. */ 
+p,h1,h2,div.content div {
+  max-width: 600px;
+  /* Hack for IE6 */
+  width: auto !important; width: 600px;
+}
+
+pre.codeinput {
+  background: #EEEEEE;
+  padding: 10px;
+}
+@media print {
+  pre.codeinput {word-wrap:break-word; width:100%;}
+} 
+
+span.keyword {color: #0000FF}
+span.comment {color: #228B22}
+span.string {color: #A020F0}
+span.untermstring {color: #B20000}
+span.syscmd {color: #B28C00}
+
+pre.codeoutput {
+  color: #666666;
+  padding: 10px;
+}
+
+pre.error {
+  color: red;
+}
+
+p.footer {
+  text-align: right;
+  font-size: xx-small;
+  font-weight: lighter;
+  font-style: italic;
+  color: gray;
+}
+
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#1">SpektraleSch&auml;tzung.m</a></li><li><a href="#2">(i) Erzeugung eines echobehafteten Zufallssignals</a></li><li><a href="#3">(ii)Periodogramm: Berechnen Sie das Betragsquadrat der Fourier-Transformierten</a></li><li><a href="#4">(iii) Welch-Methode: Unterteilen Sie die Signale aus (ii)</a></li><li><a href="#5">(iv) AKF-Sch&auml;tzung</a></li><li><a href="#6">(v) Spektralsch&auml;tzung f&uuml;r Sinussignal</a></li></ul></div><h2>SpektraleSch&auml;tzung.m<a name="1"></a></h2><p>B.Wir 20.9.02, ver.1.1 9.5.2012</p><pre class="codeinput">close <span class="string">all</span>
+clear
+clc
+</pre><h2>(i) Erzeugung eines echobehafteten Zufallssignals<a name="2"></a></h2><pre>    mit 1024 Werten</pre><pre class="codeinput">N =1024; <span class="comment">% Anzahl der Werte</span>
+x_k=randn(1,N);
+g_k= [1 0 0 0.5];
+
+y_k=conv(x_k,g_k,<span class="string">'same'</span>);
+<span class="comment">% oder auch so</span>
+<span class="comment">% y_k =filter(1,g_k,x_k);</span>
+
+<span class="comment">% Sp&auml;ter: zu (v)</span>
+<span class="comment">% t = 1:N;</span>
+<span class="comment">% x_k = sin(2*pi*( 1/5)*t);</span>
+<span class="comment">% y_k = x_k + 2 * randn(size(x_k))+ 1;</span>
+
+figure(1)
+subplot(3,3,1); plot(x_k); title(<span class="string">'Zufallssignal x'</span>); xlim([1 N]);
+subplot(3,3,4); stem(g_k); title(<span class="string">'Impulsantwort g'</span>); xlim([1,10])
+subplot(3,3,7); plot(y_k); title(<span class="string">'Echo y = conv(x,g)'</span>);  xlim([1 N]);
+</pre><img vspace="5" hspace="5" src="aSpektraleSchaetzung_01.png" alt=""> <h2>(ii)Periodogramm: Berechnen Sie das Betragsquadrat der Fourier-Transformierten<a name="3"></a></h2><pre>des Signals, der Kanalimpulsantwort und des Echosignals.
+Begr&uuml;nden Sie die auftretende Modulation durch eine quantitative Rechnung.
+(Hinweise: g_k = [ 0.5 0 0 0.5] + [ 0.5 0 0 0 ])
+Nennen Sie einen prinzipiellen Nachteil der Spektralsch&auml;tzung mit dem
+Periodogramm.</pre><pre class="codeinput"><span class="comment">% X_nu = fft(....) .* conj(fft(....))/N;</span>
+<span class="comment">% G_nu = fft(....,N) .* conj(...))/N;</span>
+<span class="comment">% Y_nu = ................;</span>
+<span class="comment">%</span>
+<span class="comment">% subplot(3,3,2); plot(X_nu); title('Periodogramm: 1/N | fft(x) |^2'); xlim([1 N]);</span>
+<span class="comment">% subplot(3,3,5); plot(G_nu); title('Periodogramm: 1/N | fft(g) |^2'); xlim([1 N]);</span>
+<span class="comment">% subplot(3,3,8); plot(Y_nu); title('Periodogramm: 1/N | fft(y) |^2'); xlim([1 N]);</span>
+
+<span class="comment">% Antworten:</span>
+<span class="comment">%</span>
+<span class="comment">%</span>
+<span class="comment">%</span>
+</pre><h2>(iii) Welch-Methode: Unterteilen Sie die Signale aus (ii)<a name="4"></a></h2><pre>in Abschnitte der L&auml;nge L = 128 mit 50% &Uuml;berlapp, und berechnen Sie
+die Mittelwerte der Periodiogramme.</pre><p>L = 128 x = x_k(1:L); y = y_k(1:L); Welch_x = (fft(x).*conj(fft(x)))/L; Welch_y = (fft(y).*conj(fft(y)))/L; i_anz = 0; for i = fix(L/2):fix(L/2):(N-L)     x = x_k(i:i+L-1);     y = y_k(i:i+L-1);     Welch_x = Welch_x+ ...........;     Welch_y = Welch_y+ ...........;     i_anz= i_anz+1; end Welch_x = Welch_x/i_anz; Welch_y = Welch_y/i_anz;</p><p>subplot(3,3,3);   plot(Welch_x); title('Welch(x)'); hold on;xlim([1 L]); subplot(3,3,9);   plot(Welch_y); title('Welch(y)');  hold off;xlim([1 L]); Antworten:</p><h2>(iv) AKF-Sch&auml;tzung<a name="5"></a></h2><p>akf_x = xcorr(.......); akf_y = xcorr(.....);</p><p>figure(2); subplot(3,2,1); plot(akf_x);title('AKF(x)');xlim([1 2*N]);            subplot(3,2,3); plot(akf_y);title('AKF(y)');xlim([1 2*N]);            subplot(3,2,5); plot(abs( fft(akf_y))); title('abs[ FFT (AKF (y) ]');            xlim([1 2*N]);</p><pre class="codeinput"><span class="comment">% L =  100</span>
+<span class="comment">% x = x_k(1:1+L);</span>
+<span class="comment">% y = y_k(1:1+L);</span>
+<span class="comment">% AKF_mittel_x = (xcorr(x,x)/L);</span>
+<span class="comment">% AKF_mittel_y = (xcorr(y,y)/L);</span>
+<span class="comment">% i_anz = 0;</span>
+<span class="comment">% for i = fix(L/2):fix(L/2):(N-L)</span>
+<span class="comment">%     x = x_k(i:i+L);</span>
+<span class="comment">%     y = y_k(i:i+L);</span>
+<span class="comment">%     AKF_mittel_x = AKF_mittel_x + ...;</span>
+<span class="comment">%     AKF_mittel_y = AKF_mittel_y + .....);</span>
+<span class="comment">%     i_anz= i_anz+1;</span>
+<span class="comment">% end</span>
+<span class="comment">% AKF_mittel_x = AKF_mittel_x/i_anz;</span>
+<span class="comment">% AKF_mittel_y = AKF_mittel_y/i_anz;</span>
+
+<span class="comment">%     subplot(3,2,2); plot(AKF_mittel_x);title('AKF_{mittel}(x)');xlim([1 2*L])</span>
+<span class="comment">%     subplot(3,2,4); plot(AKF_mittel_y);title('AKF_{mittel}(y)');xlim([1 2*L])</span>
+<span class="comment">%     subplot(3,2,6); plot(abs( fft(AKF_mittel_y))); title('abs[ FFT (AKF_{mittel}(y) ]');xlim([1 2*L])</span>
+</pre><h2>(v) Spektralsch&auml;tzung f&uuml;r Sinussignal<a name="6"></a></h2><p>t = 1:N; x_k = sin(2*pi*( 1/5)*t); y_k = x_k + 2 * randn(size(x_k))+ 1;</p><p class="footer"><br>
+      Published with MATLAB&reg; 7.12<br></p></div><!--
+##### SOURCE BEGIN #####
+%% SpektraleSchätzung.m
+%
+% B.Wir 20.9.02, ver.1.1 9.5.2012
+close all
+clear
+clc
+%% (i) Erzeugung eines echobehafteten Zufallssignals 
+%      mit 1024 Werten 
+N =1024; % Anzahl der Werte
+x_k=randn(1,N);
+g_k= [1 0 0 0.5];
+
+y_k=conv(x_k,g_k,'same');
+% oder auch so
+% y_k =filter(1,g_k,x_k);
+
+% Später: zu (v)
+% t = 1:N;
+% x_k = sin(2*pi*( 1/5)*t);
+% y_k = x_k + 2 * randn(size(x_k))+ 1;
+
+figure(1)
+subplot(3,3,1); plot(x_k); title('Zufallssignal x'); xlim([1 N]);
+subplot(3,3,4); stem(g_k); title('Impulsantwort g'); xlim([1,10])
+subplot(3,3,7); plot(y_k); title('Echo y = conv(x,g)');  xlim([1 N]);
+%% (ii)Periodogramm: Berechnen Sie das Betragsquadrat der Fourier-Transformierten 
+%  des Signals, der Kanalimpulsantwort und des Echosignals. 
+%  Begründen Sie die auftretende Modulation durch eine quantitative Rechnung.
+%  (Hinweise: g_k = [ 0.5 0 0 0.5] + [ 0.5 0 0 0 ]) 
+%  Nennen Sie einen prinzipiellen Nachteil der Spektralschätzung mit dem
+%  Periodogramm.
+
+% X_nu = fft(....) .* conj(fft(....))/N;
+% G_nu = fft(....,N) .* conj(...))/N;
+% Y_nu = ................;
+% 
+% subplot(3,3,2); plot(X_nu); title('Periodogramm: 1/N | fft(x) |^2'); xlim([1 N]);
+% subplot(3,3,5); plot(G_nu); title('Periodogramm: 1/N | fft(g) |^2'); xlim([1 N]);
+% subplot(3,3,8); plot(Y_nu); title('Periodogramm: 1/N | fft(y) |^2'); xlim([1 N]);
+
+% Antworten: 
+%
+%
+%
+
+%% (iii) Welch-Methode: Unterteilen Sie die Signale aus (ii) 
+%  in Abschnitte der Länge L = 128 mit 50% Überlapp, und berechnen Sie
+%  die Mittelwerte der Periodiogramme. 
+%  
+% L = 128
+% x = x_k(1:L);
+% y = y_k(1:L);
+% Welch_x = (fft(x).*conj(fft(x)))/L;
+% Welch_y = (fft(y).*conj(fft(y)))/L;
+% i_anz = 0;
+% for i = fix(L/2):fix(L/2):(N-L)
+%     x = x_k(i:i+L-1);
+%     y = y_k(i:i+L-1);
+%     Welch_x = Welch_x+ ...........;  
+%     Welch_y = Welch_y+ ...........;
+%     i_anz= i_anz+1;
+% end
+% Welch_x = Welch_x/i_anz;
+% Welch_y = Welch_y/i_anz;
+% 
+% subplot(3,3,3);   plot(Welch_x); title('Welch(x)'); hold on;xlim([1 L]);
+% subplot(3,3,9);   plot(Welch_y); title('Welch(y)');  hold off;xlim([1 L]);
+% Antworten: 
+%
+%
+%
+%% (iv) AKF-Schätzung
+% 
+% akf_x = xcorr(.......);
+% akf_y = xcorr(.....);
+% 
+% figure(2); subplot(3,2,1); plot(akf_x);title('AKF(x)');xlim([1 2*N]);
+%            subplot(3,2,3); plot(akf_y);title('AKF(y)');xlim([1 2*N]);
+%            subplot(3,2,5); plot(abs( fft(akf_y))); title('abs[ FFT (AKF (y) ]');
+%            xlim([1 2*N]);
+% 
+
+% L =  100
+% x = x_k(1:1+L);
+% y = y_k(1:1+L);
+% AKF_mittel_x = (xcorr(x,x)/L);
+% AKF_mittel_y = (xcorr(y,y)/L);
+% i_anz = 0;
+% for i = fix(L/2):fix(L/2):(N-L)
+%     x = x_k(i:i+L);
+%     y = y_k(i:i+L);
+%     AKF_mittel_x = AKF_mittel_x + ...;
+%     AKF_mittel_y = AKF_mittel_y + .....);
+%     i_anz= i_anz+1;
+% end
+% AKF_mittel_x = AKF_mittel_x/i_anz;
+% AKF_mittel_y = AKF_mittel_y/i_anz;
+
+%     subplot(3,2,2); plot(AKF_mittel_x);title('AKF_{mittel}(x)');xlim([1 2*L])
+%     subplot(3,2,4); plot(AKF_mittel_y);title('AKF_{mittel}(y)');xlim([1 2*L])
+%     subplot(3,2,6); plot(abs( fft(AKF_mittel_y))); title('abs[ FFT (AKF_{mittel}(y) ]');xlim([1 2*L])
+
+%% (v) Spektralschätzung für Sinussignal
+% t = 1:N;
+% x_k = sin(2*pi*( 1/5)*t);
+% y_k = x_k + 2 * randn(size(x_k))+ 1;
+
+
+
+##### SOURCE END #####
+--></body></html>

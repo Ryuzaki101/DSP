@@ -1,0 +1,190 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN">
+<html xmlns:mwsh="http://www.mathworks.com/namespace/mcode/v1/syntaxhighlight.dtd">
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+      <!--
+This HTML is auto-generated from an M-file.
+To make changes, update the M-file and republish this document.
+      -->
+      <title>Schnelle Faltung</title>
+      <meta name="generator" content="MATLAB 7.3">
+      <meta name="date" content="2012-08-16">
+      <meta name="m-file" content="aSchnelleFaltung"><style>
+
+body {
+  background-color: white;
+  margin:10px;
+}
+
+h1 {
+  color: #990000; 
+  font-size: x-large;
+}
+
+h2 {
+  color: #990000;
+  font-size: medium;
+}
+
+/* Make the text shrink to fit narrow windows, but not stretch too far in 
+wide windows. */ 
+p,h1,h2,div.content div {
+  max-width: 600px;
+  /* Hack for IE6 */
+  width: auto !important; width: 600px;
+}
+
+pre.codeinput {
+  background: #EEEEEE;
+  padding: 10px;
+}
+@media print {
+  pre.codeinput {word-wrap:break-word; width:100%;}
+} 
+
+span.keyword {color: #0000FF}
+span.comment {color: #228B22}
+span.string {color: #A020F0}
+span.untermstring {color: #B20000}
+span.syscmd {color: #B28C00}
+
+pre.codeoutput {
+  color: #666666;
+  padding: 10px;
+}
+
+pre.error {
+  color: red;
+}
+
+p.footer {
+  text-align: right;
+  font-size: xx-small;
+  font-weight: lighter;
+  font-style: italic;
+  color: gray;
+}
+
+  </style></head>
+   <body>
+      <div class="content">
+         <h1>Schnelle Faltung</h1>
+         <introduction></introduction>
+         <h2>Contents</h2>
+         <div>
+            <ul>
+               <li><a href="#1">(i) Falten der Signale mithilfe der FFT</a></li>
+               <li><a href="#2">(ii) Falten ohne Zero-Padding</a></li>
+               <li><a href="#3">(iii) Rechenzeitvorteil der schnellen Faltung (Frequenzbereichsfaltung)</a></li>
+            </ul>
+         </div>
+         <h2>(i) Falten der Signale mithilfe der FFT<a name="1"></a></h2><pre class="codeinput">x_k = [ 1 0 0 2 0 0]
+g_k = [ 1 2 3 0 0 0]
+y = conv(x_k,g_k)
+
+X = fft(x_k);
+G = fft(g_k);
+<span class="comment">% Y =</span>
+<span class="comment">% y_f = ifft(Y)</span>
+</pre><pre class="codeoutput">
+x_k =
+
+     1     0     0     2     0     0
+
+
+g_k =
+
+     1     2     3     0     0     0
+
+
+y =
+
+     1     2     3     2     4     6     0     0     0     0     0
+
+</pre><h2>(ii) Falten ohne Zero-Padding<a name="2"></a></h2><pre class="codeinput">x_k = x_k(1:4)
+g_k = g_k(1:4)
+
+<span class="comment">% X = .......;</span>
+<span class="comment">% G = ...... ;</span>
+<span class="comment">% Y = ......;</span>
+<span class="comment">% y_f = ifft(Y)</span>
+</pre><pre class="codeoutput">
+x_k =
+
+     1     0     0     2
+
+
+g_k =
+
+     1     2     3     0
+
+</pre><h2>(iii) Rechenzeitvorteil der schnellen Faltung (Frequenzbereichsfaltung)<a name="3"></a></h2>
+         <p>Die FFT ben&ouml;tigt ca. \( Nlog_2N \) Rechenoperation. Sch&auml;tzen Sie ab, ab welcher Filterordnung \( N\) die Faltung mithilfe
+            der FFT schneller als ein digitales Filter ist. F&uuml;r M Signalwerte und N Filterkoef.
+         </p><pre class="codeinput">N = 1:100;
+M = 1024
+
+<span class="comment">% zeit_filter = .....</span>
+<span class="comment">% zeit_fft = ....  ;</span>
+<span class="comment">%</span>
+<span class="comment">% plot(N,zeit_filter,N,zeit_fft); title('Schnelle Faltung'), legend('Filter','FFT-Faltung');</span>
+<span class="comment">%                                 xlabel('Filterordnung');</span>
+
+<span class="comment">% Antwort:</span>
+<span class="comment">% Offen:</span>
+</pre><pre class="codeoutput">
+M =
+
+        1024
+
+</pre><p class="footer"><br>
+            Published with MATLAB&reg; 7.3<br></p>
+      </div>
+      <!--
+##### SOURCE BEGIN #####
+%% Schnelle Faltung 
+%% (i) Falten der Signale mithilfe der FFT 
+
+x_k = [ 1 0 0 2 0 0]
+g_k = [ 1 2 3 0 0 0]
+y = conv(x_k,g_k)
+
+X = fft(x_k);
+G = fft(g_k);
+% Y = 
+% y_f = ifft(Y)
+
+%% (ii) Falten ohne Zero-Padding 
+
+x_k = x_k(1:4)
+g_k = g_k(1:4)
+
+% X = .......;
+% G = ...... ;
+% Y = ......;
+% y_f = ifft(Y)
+
+%% (iii) Rechenzeitvorteil der schnellen Faltung (Frequenzbereichsfaltung)
+% Die FFT benötigt ca. \( Nlog_2N \) Rechenoperation.
+% Schätzen Sie ab, ab welcher Filterordnung \( N\) die Faltung mithilfe der FFT 
+% schneller als ein digitales Filter ist. 
+% Für M Signalwerte und N Filterkoef.
+
+N = 1:100;
+M = 1024 
+
+% zeit_filter = .....
+% zeit_fft = ....  ;
+% 
+% plot(N,zeit_filter,N,zeit_fft); title('Schnelle Faltung'), legend('Filter','FFT-Faltung');
+%                                 xlabel('Filterordnung');   
+
+% Antwort: 
+% Offen:  
+##### SOURCE END #####
+-->
+   </body>
+</html>

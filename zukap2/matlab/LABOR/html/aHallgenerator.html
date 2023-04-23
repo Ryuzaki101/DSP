@@ -1,0 +1,127 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>aHallgenerator</title><meta name="generator" content="MATLAB 7.12"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2012-07-31"><meta name="DC.source" content="aHallgenerator.m"><style type="text/css">
+
+body {
+  background-color: white;
+  margin:10px;
+}
+
+h1 {
+  color: #990000; 
+  font-size: x-large;
+}
+
+h2 {
+  color: #990000;
+  font-size: medium;
+}
+
+/* Make the text shrink to fit narrow windows, but not stretch too far in 
+wide windows. */ 
+p,h1,h2,div.content div {
+  max-width: 600px;
+  /* Hack for IE6 */
+  width: auto !important; width: 600px;
+}
+
+pre.codeinput {
+  background: #EEEEEE;
+  padding: 10px;
+}
+@media print {
+  pre.codeinput {word-wrap:break-word; width:100%;}
+} 
+
+span.keyword {color: #0000FF}
+span.comment {color: #228B22}
+span.string {color: #A020F0}
+span.untermstring {color: #B20000}
+span.syscmd {color: #B28C00}
+
+pre.codeoutput {
+  color: #666666;
+  padding: 10px;
+}
+
+pre.error {
+  color: red;
+}
+
+p.footer {
+  text-align: right;
+  font-size: xx-small;
+  font-weight: lighter;
+  font-style: italic;
+  color: gray;
+}
+
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#1">Aufgabe: Hallgenerator</a></li><li><a href="#2">Sinuston mit Profil</a></li><li><a href="#3">Hallgenerator</a></li></ul></div><h2>Aufgabe: Hallgenerator<a name="1"></a></h2><p>Geben Sie f&uuml;r ein digitales System mit der Abtastfrequnz f_A= 8kHz die Filterkoeffizienten f&uuml;r eine Hallerzeugung mit der Periode 0.25s sowie der D&auml;mfpung 0.8, und h&ouml;ren Sie sich das Ergebnis f&uuml;r einen Beispielton an. (c) B. Wir 26.7.2012</p><pre class="codeinput">clear <span class="string">all</span>; close <span class="string">all</span>;
+</pre><h2>Sinuston mit Profil<a name="2"></a></h2><pre class="codeinput">F_A = 8000   <span class="comment">% Abtastfrequenz in Hz</span>
+T_A = 1/F_A  <span class="comment">% Abtastabstand in s</span>
+WINDOW = 512;  <span class="comment">% Fenster f&uuml;r Spektrogramm</span>
+F = 200;     <span class="comment">% Frequenz in Hz</span>
+
+t = 0:T_A: 2.000-T_A;
+x = sin (2*pi*F*t);
+x = x + 0.8* (x.^2-0.5); + 0.5 .* x.^5; <span class="comment">% mit Obert&ouml;nen</span>
+profil = exp(-t*15); <span class="comment">% .* (1-exp(-t*100));</span>
+x = x.*profil;                          <span class="comment">% .. und Profil</span>
+
+figure(1); subplot(1,2,1)
+spectrogram(x,WINDOW);colorbar;title(<span class="string">'Ton'</span>)
+soundsc(x,F_A);
+</pre><pre class="codeoutput">
+F_A =
+
+        8000
+
+
+T_A =
+
+  1.2500e-004
+
+</pre><img vspace="5" hspace="5" src="aHallgenerator_01.png" alt=""> <h2>Hallgenerator<a name="3"></a></h2><p>a = ............ ........</p><p>y = filter(1,a,x); soundsc(y,F_A); figure(1); subplot(1,2,2) spectrogram(y,WINDOW); colorbar;title('Spektrogramm/dB')</p><p class="footer"><br>
+      Published with MATLAB&reg; 7.12<br></p></div><!--
+##### SOURCE BEGIN #####
+%% Aufgabe: Hallgenerator
+% Geben Sie für ein digitales System mit der Abtastfrequnz f_A= 8kHz
+% die Filterkoeffizienten für eine Hallerzeugung mit der Periode 0.25s sowie 
+% der Dämfpung 0.8, und hören Sie sich das Ergebnis für einen Beispielton an.
+% (c) B. Wir 26.7.2012
+clear all; close all;
+%% Sinuston mit Profil
+F_A = 8000   % Abtastfrequenz in Hz
+T_A = 1/F_A  % Abtastabstand in s
+WINDOW = 512;  % Fenster für Spektrogramm
+F = 200;     % Frequenz in Hz
+
+t = 0:T_A: 2.000-T_A;
+x = sin (2*pi*F*t);
+x = x + 0.8* (x.^2-0.5); + 0.5 .* x.^5; % mit Obertönen
+profil = exp(-t*15); % .* (1-exp(-t*100));
+x = x.*profil;                          % .. und Profil 
+
+figure(1); subplot(1,2,1)
+spectrogram(x,WINDOW);colorbar;title('Ton')
+soundsc(x,F_A);
+
+
+%% Hallgenerator
+% a = ............
+% ........  
+% 
+% y = filter(1,a,x);
+% soundsc(y,F_A);
+% figure(1); subplot(1,2,2)
+% spectrogram(y,WINDOW); colorbar;title('Spektrogramm/dB')
+
+
+##### SOURCE END #####
+--></body></html>

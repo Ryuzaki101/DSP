@@ -1,0 +1,231 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN">
+<html xmlns:mwsh="http://www.mathworks.com/namespace/mcode/v1/syntaxhighlight.dtd">
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   
+      <!--
+This HTML is auto-generated from an M-file.
+To make changes, update the M-file and republish this document.
+      -->
+      <title>aGlaettungsfilter</title>
+      <meta name="generator" content="MATLAB 7.3">
+      <meta name="date" content="2012-07-26">
+      <meta name="m-file" content="aGlaettungsfilter"><style>
+
+body {
+  background-color: white;
+  margin:10px;
+}
+
+h1 {
+  color: #990000; 
+  font-size: x-large;
+}
+
+h2 {
+  color: #990000;
+  font-size: medium;
+}
+
+/* Make the text shrink to fit narrow windows, but not stretch too far in 
+wide windows. */ 
+p,h1,h2,div.content div {
+  max-width: 600px;
+  /* Hack for IE6 */
+  width: auto !important; width: 600px;
+}
+
+pre.codeinput {
+  background: #EEEEEE;
+  padding: 10px;
+}
+@media print {
+  pre.codeinput {word-wrap:break-word; width:100%;}
+} 
+
+span.keyword {color: #0000FF}
+span.comment {color: #228B22}
+span.string {color: #A020F0}
+span.untermstring {color: #B20000}
+span.syscmd {color: #B28C00}
+
+pre.codeoutput {
+  color: #666666;
+  padding: 10px;
+}
+
+pre.error {
+  color: red;
+}
+
+p.footer {
+  text-align: right;
+  font-size: xx-small;
+  font-weight: lighter;
+  font-style: italic;
+  color: gray;
+}
+
+  </style></head>
+   <body>
+      <div class="content">
+         <h2>Contents</h2>
+         <div>
+            <ul>
+               <li><a href="#1">aGlaettungsfilter.m</a></li>
+               <li><a href="#2">Verrauschter Sinus</a></li>
+               <li><a href="#3">(i) Gesamtimpulsantwort zweimal [1 1 1 ]</a></li>
+               <li><a href="#4">(ii) IIR-Filter</a></li>
+               <li><a href="#5">(iii) Rechtecksiganl</a></li>
+            </ul>
+         </div>
+         <h2>aGlaettungsfilter.m<a name="1"></a></h2>
+         <p>Ein FIR-Filter mit den Koeffizienten \( b = [ 1, 1, 1] \) wird zweimal hintereinander auf ein verrauschtes Sinussignal angewandt.
+            (i)  Welcher Gesamtimpulsantort entspricht diese Verarbeitung und      welche Wirkung hat das Filter? (ii) Welche Impulsantwort
+            hat ein IIR-Filter mit den Koeffizienten       \(b_0 = 1 \) und \( a_1 = -0.9 \)?      Welche Wirkung hat das Filter? (iii)
+            Beantworten Sie die Fragen (i) und (ii) f&uuml;r ein Rechtecksignal.
+         </p><pre class="codeinput">close <span class="string">all</span>; clear <span class="string">all</span>;
+</pre><h2>Verrauschter Sinus<a name="2"></a></h2><pre class="codeinput">T_A = 0.001         <span class="comment">% [s]</span>
+F = 50            <span class="comment">% [Hz]</span>
+
+t = (0:T_A:0.1-T_A); <span class="comment">% 0.1 s,</span>
+x_k  = sin (2*pi*F*t);
+
+<span class="comment">% Sp&auml;ter f&uuml;r Aufgabe (iii)</span>
+<span class="comment">%x_k(x_k&gt;0) = 1;</span>
+<span class="comment">%x_k(x_k&lt;0) = -1;</span>
+
+xr_k = x_k + 0.4* randn(size(x_k));
+
+figure(1); subplot(3,1,1);
+plot(x_k); ; hold <span class="string">on</span>; plot(xr_k,<span class="string">'r'</span>); title(<span class="string">'x_k / mit Rauschen'</span>); hold <span class="string">off</span>;
+</pre><pre class="codeoutput">
+T_A =
+
+  1.0000e-003
+
+
+F =
+
+    50
+
+</pre><img vspace="5" hspace="5" src="aGlaettungsfilter_01.png"> <h2>(i) Gesamtimpulsantwort zweimal [1 1 1 ]<a name="3"></a></h2><pre class="codeinput">b = [ 1, 1, 1]
+impuls = [ 1 0 0 0 0 0]
+y = filter(b,1,impuls);
+g_g = filter(b,1,y)
+g_g = conv(b,b)   <span class="comment">% gleiches Ergebnis</span>
+
+<span class="comment">% Wirkung des Filters</span>
+
+yr_k  = filter(g_g,1,xr_k);
+
+figure(1); subplot(3,1,2);
+plot(x_k); ; hold <span class="string">on</span>; plot(yr_k/9,<span class="string">'r'</span>); title(<span class="string">'... nach FIR Filter'</span>); hold <span class="string">off</span>;
+</pre><pre class="codeoutput">
+b =
+
+     1     1     1
+
+
+impuls =
+
+     1     0     0     0     0     0
+
+
+g_g =
+
+     1     2     3     2     1     0
+
+
+g_g =
+
+     1     2     3     2     1
+
+</pre><img vspace="5" hspace="5" src="aGlaettungsfilter_02.png"> <h2>(ii) IIR-Filter<a name="4"></a></h2><pre class="codeinput">b = 1 ;
+a = -0.5;
+imulsantort = filter(b,[1 a],impuls)
+yr_k  = filter(b,[1 a],xr_k);
+
+<span class="comment">% Trick f&uuml;r Nullphasige IIR Filter:</span>
+yr_k  = fliplr(filter(b,[1 a],fliplr(yr_k))); <span class="comment">% siehe auch filtfilt.m</span>
+
+figure(1); subplot(3,1,3);
+plot(x_k); hold <span class="string">on</span>; plot(yr_k/(2/(1+a)),<span class="string">'r'</span>); title(<span class="string">'... nach IIR Filter'</span>); hold <span class="string">off</span>;
+</pre><pre class="codeoutput">
+imulsantort =
+
+    1.0000    0.5000    0.2500    0.1250    0.0625    0.0313
+
+</pre><img vspace="5" hspace="5" src="aGlaettungsfilter_03.png"> <h2>(iii) Rechtecksiganl<a name="5"></a></h2><pre>entsteht aus Sinus durch Schwellwertoperation</pre><pre class="codeinput">x_k(x_k&gt;0) = 1;
+x_k(x_k&lt;0) = -1;
+</pre><p class="footer"><br>
+            Published with MATLAB&reg; 7.3<br></p>
+      </div>
+      <!--
+##### SOURCE BEGIN #####
+%% aGlaettungsfilter.m
+% Ein FIR-Filter mit den Koeffizienten \( b = [ 1, 1, 1] \)
+% wird zweimal hintereinander auf ein verrauschtes Sinussignal angewandt. 
+% (i)  Welcher Gesamtimpulsantort entspricht diese Verarbeitung und 
+%      welche Wirkung hat das Filter?
+% (ii) Welche Impulsantwort hat ein IIR-Filter mit den Koeffizienten 
+%       \(b_0 = 1 \) und \( a_1 = -0.9 \)?
+%      Welche Wirkung hat das Filter? 
+% (iii) Beantworten Sie die Fragen (i) und (ii) für ein Rechtecksignal.
+
+close all; clear all;
+%% Verrauschter Sinus
+T_A = 0.001         % [s] 
+F = 50            % [Hz]
+
+t = (0:T_A:0.1-T_A); % 0.1 s,
+x_k  = sin (2*pi*F*t);
+
+% Später für Aufgabe (iii)
+%x_k(x_k>0) = 1;
+%x_k(x_k<0) = -1;
+
+xr_k = x_k + 0.4* randn(size(x_k));
+
+figure(1); subplot(3,1,1); 
+plot(x_k); ; hold on; plot(xr_k,'r'); title('x_k / mit Rauschen'); hold off;
+
+%% (i) Gesamtimpulsantwort zweimal [1 1 1 ]
+
+b = [ 1, 1, 1]
+impuls = [ 1 0 0 0 0 0]
+y = filter(b,1,impuls);
+g_g = filter(b,1,y)
+g_g = conv(b,b)   % gleiches Ergebnis
+
+% Wirkung des Filters
+
+yr_k  = filter(g_g,1,xr_k);
+
+figure(1); subplot(3,1,2); 
+plot(x_k); ; hold on; plot(yr_k/9,'r'); title('... nach FIR Filter'); hold off;
+
+%% (ii) IIR-Filter
+b = 1 ;
+a = -0.5;
+imulsantort = filter(b,[1 a],impuls)
+yr_k  = filter(b,[1 a],xr_k);
+
+% Trick für Nullphasige IIR Filter:
+yr_k  = fliplr(filter(b,[1 a],fliplr(yr_k))); % siehe auch filtfilt.m 
+ 
+figure(1); subplot(3,1,3); 
+plot(x_k); hold on; plot(yr_k/(2/(1+a)),'r'); title('... nach IIR Filter'); hold off;
+
+%% (iii) Rechtecksiganl
+%  entsteht aus Sinus durch Schwellwertoperation
+
+x_k(x_k>0) = 1;
+x_k(x_k<0) = -1;
+
+##### SOURCE END #####
+-->
+   </body>
+</html>
